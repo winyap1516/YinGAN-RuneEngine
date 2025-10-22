@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✨ 符文生成系统 Rune Engine ✨</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Transformers.js for browser-side embeddings -->
+  <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.8.0/dist/transformers.min.js"></script>
+  <!-- 符文数据结构 -->
+  <script src="rune-structure.js"></script>
+  
+</head>
+<body>
+  <!-- 顶部栏：小Logo + 简短标题 + AI助手按钮 -->
+  <header id="topBar">
+    <div class="logo-mini">🜂</div>
+    <h1>Rune Engine</h1>
+    <button id="openAIChatBtn">💬 AI助手</button>
+  </header>
+
+  <!-- 主布局：左右分栏 -->
+  <main id="layoutGrid">
+    <!-- 左：输入区（紧凑卡片化设计） -->
+    <section id="inputPanel">
+      <h2>🪶 符文生成器</h2>
+      <!-- 符文名称输入 -->
+      <input id="runeName" type="text" placeholder="符文名称" />
+      <!-- 符文描述输入 -->
+      <textarea id="runeDesc" placeholder="符文描述或背景"></textarea>
+      <!-- 文件上传（支持多种格式） -->
+      <input type="file" id="fileInput" multiple />
+      <!-- 生成按钮 -->
+      <button id="autoGenerateBtn">生成符文</button>
+      <!-- 进度显示区域 -->
+      <div id="progressBox" class="progress-box">
+        <span id="progressText">准备中…</span>
+      </div>
+    </section>
+
+    <!-- 右：展示区 + 聊天 -->
+    <section id="displayPanel">
+      <!-- 符文输出显示区域 -->
+      <div id="runeOutput">
+        <!-- 符文工作区 -->
+        <div id="workspaceBox">
+          <h3>🗂️ 符文工作区</h3>
+          <div class="workspace-actions">
+            <button id="selectWorkspaceBtn">📁 选择文件夹</button>
+            <button id="openWorkspaceBtn">🔍 浏览文件</button>
+            <button id="reloadWorkspaceBtn">🔄 重载</button>
+          </div>
+          <div id="workspaceStatus" class="tip">工作区：未选择</div>
+          <div id="workspaceList" class="workspace-list"></div>
+        </div>
+
+        <!-- 符文库 -->
+        <div id="runeLibraryBox">
+          <h3>🗂️ 我的符文库</h3>
+          <div id="runeLibraryList" class="rune-library-list">
+            <p class="tip">还没有生成符文</p>
+          </div>
+        </div>
+
+        <!-- 符文详情 -->
+        <div id="runeDetailBox">
+          <h3>🪄 符文详情</h3>
+          <div id="runeInterpretation" class="rune-interpretation"></div>
+          <div class="rune-card" id="runeCard">
+            <div class="card-media" id="cardMedia"></div>
+            <div class="card-body">
+              <div class="card-title" id="cardTitle"></div>
+              <div class="card-desc" id="cardDesc"></div>
+              <div class="card-meta" id="cardMeta"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 嵌入式聊天区（固定在右下方） -->
+      <div id="chatBox">
+        <div id="chatHistory">
+          <div class="chat-message ai-message">我是符文解说AI，可以帮你理解或扩写符文。</div>
+        </div>
+        <div class="chat-input-area">
+          <textarea id="chatInput" placeholder="问我任何关于符文的问题..."></textarea>
+          <button id="sendChatBtn">发送</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- AI 聊天室弹窗：复用通用 modal 样式 -->
+  <div id="aiChatModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>💬 AI 聊天室</h2>
+        <span id="closeAIChatModal" class="close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <!-- 聊天历史列表 -->
+        <div id="chatHistory" style="max-height: 320px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; padding: 10px; background: #fafafa;">
+          <div class="chat-message ai-message"><p>您好，我是符文分析助手。请问有什么可以帮您？</p></div>
+        </div>
+        <!-- 输入区与发送按钮 -->
+        <div style="display:flex; gap:8px; align-items:center; margin-top:10px;">
+          <textarea id="chatInput" rows="2" placeholder="请输入您的问题（Enter发送，Shift+Enter换行）" style="flex:1; padding:8px; border:1px solid #ddd; border-radius:8px;"></textarea>
+          <button id="sendChatBtn" class="btn" style="min-width:96px;">发送</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 自动符文生成器 -->
+  <script type="module" src="auto-rune-generator.js"></script>
+  <script type="module" src="ai-understanding.js"></script>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
+

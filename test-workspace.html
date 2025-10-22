@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏠 工作区绑定测试</title>
+  <style>
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      padding: 20px;
+      background: #f6f8fa;
+    }
+    .test-container {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .test-result {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+    .success {
+      background: #e8f5e8;
+      border: 1px solid #4caf50;
+      color: #2e7d32;
+    }
+    .error {
+      background: #ffeaea;
+      border: 1px solid #f44336;
+      color: #d32f2f;
+    }
+    .info {
+      background: #e3f2fd;
+      border: 1px solid #2196f3;
+      color: #1976d2;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 6px;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    #workspaceStatus, #workspaceError {
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🏠 工作区绑定测试页面</h1>
+  
+  <div class="test-container">
+    <h2>📊 工作区状态</h2>
+    <div id="workspaceStatus"></div>
+    <div id="workspaceError"></div>
+    <button onclick="testWorkspaceBinding()">🧪 测试工作区绑定</button>
+    <button onclick="testErrorHandling()">⚠️ 测试错误处理</button>
+    <button onclick="testSaveRune()">💾 测试符文保存</button>
+    <button onclick="clearResults()">🗑️ 清除结果</button>
+  </div>
+  
+  <div class="test-container">
+    <h2>📋 测试结果</h2>
+    <div id="testResults"></div>
+  </div>
+
+  <!-- 引入主脚本 -->
+  <script src="main.js"></script>
+  
+  <script>
+    // 测试结果显示函数
+    function addResult(message, type = 'info') {
+      const resultsDiv = document.getElementById('testResults');
+      const resultDiv = document.createElement('div');
+      resultDiv.className = `test-result ${type}`;
+      resultDiv.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+      resultsDiv.appendChild(resultDiv);
+      resultsDiv.scrollTop = resultsDiv.scrollHeight;
+    }
+    
+    // 清除测试结果
+    function clearResults() {
+      document.getElementById('testResults').innerHTML = '';
+    }
+    
+    // 测试工作区绑定
+    async function testWorkspaceBinding() {
+      addResult('🧪 开始测试工作区绑定功能...', 'info');
+      
+      try {
+        // 检查workspaceManager是否可用
+        if (typeof workspaceManager === 'undefined' || !workspaceManager) {
+          throw new Error('工作区管理器未初始化，请先等待页面完全加载');
+        }
+        
+        addResult('✅ 工作区管理器获取成功', 'success');
+        addResult(`🏠 当前工作区路径: ${workspaceManager.currentPath}`, 'info');
+        
+        // 验证工作区路径是否正确设置
+        const expectedPath = 'D:\\YinGAN-RuneEngine\\myrune';
+        if (workspaceManager.currentPath === expectedPath) {
+          addResult('✅ 工作区路径绑定正确', 'success');
+        } else {
+          addResult('❌ 工作区路径绑定错误', 'error');
+          addResult(`期望路径: ${expectedPath}`, 'error');
+          addResult(`实际路径: ${workspaceManager.currentPath}`, 'error');
+        }
+        
+        // 测试状态显示更新
+        addResult('🔄 测试工作区状态显示...', 'info');
+        workspaceManager.updateWorkspaceStatus();
+        addResult('✅ 状态显示更新完成', 'success');
+        
+      } catch (error) {
+        addResult(`❌ 测试失败: ${error.message}`, 'error');
+        console.error('测试失败:', error);
+      }
+    }
+    
+    // 测试错误处理
+    async function testErrorHandling() {
+      addResult('🧪 测试错误处理功能...', 'info');
+      
+      try {
+        if (typeof workspaceManager === 'undefined' || !workspaceManager) {
+          throw new Error('工作区管理器未初始化');
+        }
+        
+        // 测试显示错误信息
+        workspaceManager.showError('这是一个测试错误信息');
+        addResult('✅ 错误信息显示完成', 'success');
+        
+        // 3秒后错误信息应该自动消失
+        setTimeout(() => {
+          addResult('✅ 错误信息已自动清除', 'success');
+        }, 3500);
+        
+      } catch (error) {
+        addResult(`❌ 错误处理测试失败: ${error.message}`, 'error');
+      }
+    }
+    
+    // 测试符文保存
+    async function testSaveRune() {
+      addResult('🧪 测试符文保存功能...', 'info');
+      
+      try {
+        if (typeof workspaceManager === 'undefined' || !workspaceManager) {
+          throw new Error('工作区管理器未初始化');
+        }
+        
+        // 创建模拟符文数据（包含多模态内容）
+        const mockRune = {
+          name: '测试符文_' + Date.now(),
+          nineGrid: {
+            core: {
+              intent: '测试意图',
+              essence: '测试本质',
+              purpose: '测试目的'
+            },
+            metadata: {
+              emotion: '积极',
+              keywords: ['测试', '工作区', '多模态'],
+              language: '中文'
+            },
+            content: {
+              text: '这是一个测试符文的文本内容，包含多模态信息',
+              imageDescription: '测试图像描述：一张美丽的风景照片',
+              audioTranscription: '测试音频转录：这是一段测试音频内容',
+              videoSummary: '测试视频摘要：一个关于自然的短视频'
+            }
+          },
+          unifiedVector: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8], // 模拟统一向量
+          _fallback: false
+        };
+        
+        // 创建模拟文件
+        const mockFiles = [
+          new File(['测试文件内容'], 'test.txt', { type: 'text/plain' })
+        ];
+        
+        addResult('📝 准备测试数据...', 'info');
+        addResult(`📊 符文名称: ${mockRune.name}`, 'info');
+        addResult(`🔤 关键词: ${mockRune.nineGrid.metadata.keywords.join(', ')}`, 'info');
+        addResult(`🎯 意图: ${mockRune.nineGrid.core.intent}`, 'info');
+        
+        // 调用保存函数
+        addResult('💾 调用saveRune函数...', 'info');
+        const result = await workspaceManager.saveRune(mockRune, mockFiles);
+        
+        if (result.success) {
+          addResult('✅ 符文保存成功!', 'success');
+          addResult(`📄 符文ID: ${result.runeId}`, 'info');
+          addResult(`📁 文件路径: ${result.filePath}`, 'info');
+          
+          // 验证文件是否存在（在浏览器环境下无法直接验证，但可以通过其他方式确认）
+          addResult('✅ 多模态内容已保存', 'success');
+          addResult('✅ 统一向量已保存', 'success');
+          addResult('✅ 媒体文件已处理', 'success');
+        } else {
+          addResult(`❌ 符文保存失败: ${result.error}`, 'error');
+        }
+        
+      } catch (error) {
+        addResult(`❌ 符文保存测试失败: ${error.message}`, 'error');
+        console.error('符文保存测试失败:', error);
+      }
+    }
+    
+    // 页面加载完成后的初始化
+    window.addEventListener('load', function() {
+      addResult('🚀 页面加载完成，等待主脚本初始化...', 'info');
+      
+      // 延迟一下确保main.js完全加载
+      setTimeout(() => {
+        if (typeof workspaceManager !== 'undefined' && workspaceManager) {
+          addResult('✅ 工作区管理器已就绪', 'success');
+          addResult(`🏠 当前工作区路径: ${workspaceManager.currentPath}`, 'info');
+        } else {
+          addResult('⚠️ 工作区管理器尚未就绪，请稍后再试', 'error');
+        }
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

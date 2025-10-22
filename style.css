@@ -1,0 +1,1827 @@
+/* ===== 精简版布局样式 v0.5 ===== */
+
+/* 基础样式重置 */
+body {
+  font-family: "Microsoft YaHei", sans-serif;
+  background: #f6f8fa;
+  color: #222;
+  padding: 0;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* 顶部栏样式 */
+#topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(90deg, #4e5ae8, #7aa2f7);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+#topBar h1 {
+  margin: 0;
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+.logo-mini {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+#topBar button {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#topBar button:hover {
+  background: rgba(255,255,255,0.3);
+  transform: translateY(-1px);
+}
+
+/* 主网格布局 */
+#layoutGrid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 16px;
+  margin: 20px;
+  max-width: 1400px;
+}
+
+/* 左侧输入面板（卡片化设计） */
+#inputPanel {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  height: fit-content;
+}
+
+#inputPanel h2 {
+  margin: 0 0 16px 0;
+  font-size: 1.3em;
+  color: #333;
+}
+
+#inputPanel input,
+#inputPanel textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+#inputPanel input:focus,
+#inputPanel textarea:focus {
+  outline: none;
+  border-color: #4e5ae8;
+}
+
+#inputPanel textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+#inputPanel button {
+  width: 100%;
+  background: linear-gradient(135deg, #4e5ae8, #7aa2f7);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#inputPanel button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(78, 90, 232, 0.3);
+  background: linear-gradient(135deg, #5a6bf0, #8ab0ff);
+}
+
+/* 进度条区域 */
+.progress-box {
+  margin-top: 12px;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #666;
+}
+
+/* 右侧展示面板 */
+#displayPanel {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 120px);
+}
+
+#runeOutput {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+/* 工作区样式 */
+#workspaceBox {
+  margin-bottom: 20px;
+}
+
+#workspaceBox h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.workspace-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.workspace-actions button {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.workspace-actions button:hover {
+  background: #e9ecef;
+  transform: translateY(-1px);
+}
+
+/* 符文库样式 */
+#runeLibraryBox {
+  margin-bottom: 20px;
+}
+
+#runeLibraryBox h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+/* 符文详情样式 */
+#runeDetailBox h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+/* 嵌入式聊天室样式 */
+#chatBox {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+  position: sticky;
+  bottom: 0;
+}
+
+#chatHistory {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  padding: 8px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+.chat-input-area {
+  display: flex;
+  gap: 6px;
+}
+
+.chat-input-area textarea {
+  flex: 1;
+  resize: none;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  min-height: 36px;
+  max-height: 80px;
+}
+
+.chat-input-area button {
+  background: linear-gradient(135deg, #4e5ae8, #7aa2f7);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  min-width: 60px;
+}
+
+.chat-input-area button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(78, 90, 232, 0.3);
+}
+
+/* 聊天消息样式 */
+.chat-message {
+  padding: 8px 12px;
+  margin: 4px 0;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.chat-message.ai-message {
+  background: #eef2ff;
+  color: #1e293b;
+  margin-right: 20%;
+}
+
+.chat-message.user-message {
+  background: #f8f9fa;
+  color: #0f172a;
+  margin-left: 20%;
+  text-align: right;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  #layoutGrid {
+    grid-template-columns: 1fr;
+    margin: 10px;
+  }
+  
+  #displayPanel {
+    height: auto;
+    min-height: 400px;
+  }
+  
+  #chatBox {
+    height: 250px;
+  }
+  
+  .chat-input-area {
+    flex-direction: column;
+  }
+  
+  .chat-input-area button {
+    width: 100%;
+  }
+}
+
+/* 保留原有的符文卡片和弹窗样式 */
+/* 符文卡片样式 */
+.rune-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.card-media {
+  width: 100%;
+  height: 200px;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+}
+
+.card-body {
+  padding: 16px;
+}
+
+.card-title {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.card-desc {
+  color: #666;
+  font-size: 0.9em;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.card-meta {
+  font-size: 0.8em;
+  color: #999;
+}
+
+/* 提示文本样式 */
+.tip {
+  font-size: 12px;
+  color: #666;
+  margin: 4px 0;
+}
+
+/* 工作区列表样式 */
+.workspace-list {
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 8px;
+  background: #f8f9fa;
+  font-size: 12px;
+}
+
+/* 符文库列表样式 */
+.rune-library-list {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 8px;
+  background: #f8f9fa;
+}
+
+/* 原有的弹窗样式保持不变 */
+/* 弹窗样式 */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* 符文语义解释区域 */
+.rune-interpretation {
+  background: #f8f9fa;
+  border-left: 4px solid #007bff;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #495057;
+}
+
+.rune-id {
+  font-size: 12px;
+  color: #666;
+  background: #f0f0f0;
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin-left: 8px;
+}
+
+/* 弹窗样式 */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+  background: linear-gradient(135deg, #1a1b26, #24283b);
+  margin: 5% auto;
+  padding: 0;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 900px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  border: 1px solid #414868;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 移动端响应式设计 */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    margin: 2% auto;
+    max-height: 90vh;
+    border-radius: 12px;
+  }
+  
+  .modal-header {
+    padding: 16px 20px;
+    border-radius: 12px 12px 0 0;
+  }
+  
+  .modal-header h2 {
+    font-size: 1.4em;
+  }
+  
+  .modal-body {
+    padding: 16px;
+  }
+  
+  .rune-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .rune-detail-item {
+    padding: 16px;
+  }
+  
+  .media-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+  
+  .media-item img,
+  .media-item video {
+    height: 120px;
+  }
+  
+  /* JSON预览区域移动端优化 */
+  .rune-detail-item pre {
+    font-size: 0.8em;
+    padding: 16px;
+    max-height: 300px;
+  }
+  
+  /* 复制按钮移动端优化 */
+  .rune-detail-item button {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin-bottom: 12px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    width: 98%;
+    margin: 1% auto;
+    border-radius: 8px;
+  }
+  
+  .modal-header {
+    padding: 12px 16px;
+  }
+  
+  .modal-header h2 {
+    font-size: 1.2em;
+  }
+  
+  .close {
+    font-size: 28px;
+  }
+  
+  .rune-detail-item h3 {
+    font-size: 1.1em;
+  }
+  
+  .rune-detail-item p {
+    font-size: 1em;
+  }
+  
+  .media-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
+
+/* 增强的视觉反馈和动画效果 */
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #7dcfff, #bb9af7);
+  border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #bb9af7, #7dcfff);
+}
+
+/* 加载动画 */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.loading {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* 悬停效果增强 */
+.rune-detail-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rune-detail-item:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* 按钮动画效果 */
+.rune-detail-item button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.rune-detail-item button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.rune-detail-item button:hover::before {
+  left: 100%;
+}
+
+/* 媒体项动画增强 */
+.media-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.media-item:hover {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* 文本选择样式 */
+.rune-detail-item ::selection {
+  background: rgba(125, 207, 255, 0.3);
+  color: inherit;
+}
+
+.rune-detail-item ::-moz-selection {
+  background: rgba(125, 207, 255, 0.3);
+  color: inherit;
+}
+
+/* 焦点状态 */
+.rune-detail-item:focus-within {
+  border-left-color: #ff9e64;
+  box-shadow: 0 0 0 2px rgba(255, 158, 100, 0.2);
+}
+
+/* 暗色模式优化 */
+@media (prefers-color-scheme: dark) {
+  .modal-content {
+    border-color: #565f89;
+  }
+  
+  .rune-detail-item {
+    background: linear-gradient(135deg, #1f2335, #292e42);
+  }
+}
+
+/* 确认弹窗表单样式 */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  color: #c0caf5;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #414868;
+  border-radius: 6px;
+  background: rgba(65, 72, 104, 0.3);
+  color: #c0caf5;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #7dcfff;
+  background: rgba(65, 72, 104, 0.5);
+  box-shadow: 0 0 0 2px rgba(125, 207, 255, 0.2);
+}
+
+.form-control::placeholder {
+  color: #565f89;
+}
+
+select.form-control {
+  cursor: pointer;
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* 确认弹窗按钮样式 */
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 100px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #9ece6a, #73daca);
+  color: #1a1b26;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #73daca, #9ece6a);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(158, 206, 106, 0.3);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #f7768e, #ff9e64);
+  color: #1a1b26;
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, #ff9e64, #f7768e);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(247, 118, 142, 0.3);
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #7dcfff, #bb9af7);
+  padding: 20px 24px;
+  border-radius: 16px 16px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: white;
+  font-size: 1.6em;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.close {
+  color: white;
+  font-size: 32px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  padding: 4px;
+  border-radius: 50%;
+}
+
+.close:hover {
+  color: #ff9e64;
+  background: rgba(255, 158, 100, 0.2);
+  transform: scale(1.1);
+}
+
+.modal-body {
+  padding: 24px;
+  background: linear-gradient(135deg, #1a1b26, #24283b);
+}
+
+/* 符文详情内容样式 */
+.rune-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.rune-detail-item {
+  background: linear-gradient(135deg, #2a2a3a, #363b54);
+  padding: 20px;
+  border-radius: 12px;
+  border-left: 4px solid #7dcfff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.rune-detail-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.rune-detail-item h3 {
+  margin: 0 0 12px 0;
+  color: #7dcfff;
+  font-size: 1.2em;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rune-detail-item p {
+  margin: 0;
+  color: #c0caf5;
+  line-height: 1.6;
+  font-size: 1.1em;
+}
+
+/* 媒体预览区域 */
+.rune-media-preview {
+  margin-top: 24px;
+  background: linear-gradient(135deg, #2a2a3a, #363b54);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.rune-media-preview h3 {
+  color: #bb9af7;
+  margin-bottom: 16px;
+  font-size: 1.3em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.media-item {
+  background: linear-gradient(135deg, #363b54, #414868);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.media-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.media-item img,
+.media-item video {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px 8px 0 0;
+}
+
+.media-item audio {
+  width: 100%;
+  margin-top: 12px;
+  border-radius: 8px;
+}
+
+/* 删除按钮样式 */
+.deleteRuneBtn {
+  background: linear-gradient(135deg, #ff4757, #ff6b81);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: 8px;
+  transition: all 0.3s;
+}
+
+.deleteRuneBtn:hover {
+  background: linear-gradient(135deg, #ff6b81, #ff4757);
+  transform: translateY(-1px);
+}
+
+h1 {
+  text-align: center;
+  color: #4e5ae8;
+  text-shadow: 0 0 5px rgba(78,90,232,0.2);
+}
+
+#upload-box {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  width: 400px;
+  margin: 0 auto;
+}
+
+/* 选项（Base64开关） */
+#options-box {
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+label.option-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 参数区已移除（temperature / top-p & Base64 复选框） */
+
+textarea, input {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  padding: 8px;
+  font-size: 14px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: #4e5ae8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #3b46c5;
+}
+
+#actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+
+#result-box {
+  margin-top: 20px;
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  width: 600px;
+  margin: 30px auto;
+  box-shadow: 0 0 8px rgba(0,0,0,0.05);
+}
+
+pre {
+  background: #f0f0f0;
+  padding: 10px;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+#card-box {
+  width: 600px;
+  margin: 20px auto;
+}
+
+.rune-card {
+  display: flex;
+  gap: 16px;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.card-media {
+  width: 160px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f6f8fa;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+  width: 100%;
+  height: 100%;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+.media-item {
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #eef0f3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-item img,
+.media-item video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-media video {
+  width: 100%;
+  height: 100%;
+}
+
+.card-media audio {
+  width: 100%;
+}
+
+.card-body {
+  flex: 1;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.card-desc {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 8px;
+}
+
+.card-meta {
+  font-size: 12px;
+  color: #666;
+}
+
+/* Drive 云端存储区域已移除 */
+
+.tip {
+  color: #777;
+  font-size: 12px;
+  margin-top: 10px;
+}
+
+#local-box {
+  margin-top: 10px;
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  width: 600px;
+  margin: 30px auto;
+  box-shadow: 0 0 8px rgba(0,0,0,0.05);
+}
+
+.local-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+/* 文本预览样式 */
+.text-preview {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.text-preview h4 {
+  margin: 0 0 15px 0;
+  color: #495057;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.text-item {
+  margin-bottom: 15px;
+  padding: 12px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+}
+
+.text-item:last-child {
+  margin-bottom: 0;
+}
+
+.text-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.text-header strong {
+  color: #212529;
+  font-size: 14px;
+}
+
+.text-type {
+  font-size: 12px;
+  color: #6c757d;
+  background: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.text-size {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.text-content {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #495057;
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #e9ecef;
+  margin-bottom: 8px;
+  max-height: 100px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.text-meta {
+  font-size: 11px;
+  color: #6c757d;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* 符文库样式 */
+#runeLibraryBox {
+  margin-top: 20px;
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  width: 600px;
+  margin: 30px auto;
+  box-shadow: 0 0 8px rgba(0,0,0,0.05);
+}
+
+.rune-library-list {
+  margin-top: 10px;
+}
+
+.rune-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  margin-bottom: 8px;
+}
+
+.rune-item strong {
+  flex: 1;
+  color: #212529;
+  font-size: 14px;
+}
+
+.rune-meta {
+  font-size: 12px;
+  color: #6c757d;
+  background: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.rune-item button {
+  width: auto;
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.openRuneBtn {
+  background: #28a745 !important;
+}
+
+.openRuneBtn:hover {
+  background: #218838 !important;
+}
+
+.addMediaBtn {
+  background: #17a2b8 !important;
+}
+
+.addMediaBtn:hover {
+  background: #138496 !important;
+}
+
+/* 符文详情弹窗 v0.4 美化版 */
+
+.rune-detail-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.rune-detail-container section {
+  background: #2a2a3a;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  border: 1px solid #414868;
+  transition: all 0.3s ease;
+}
+
+.rune-detail-container section:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+}
+
+.rune-detail-container h3 {
+  color: #7dcfff;
+  margin-bottom: 12px;
+  font-size: 1.1em;
+  font-weight: 600;
+  border-bottom: 2px solid #7dcfff;
+  padding-bottom: 6px;
+}
+
+.rune-detail-container p {
+  color: #c0caf5;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.rune-detail-container code {
+  background: #1a1b26;
+  color: #9ece6a;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9em;
+  border: 1px solid #414868;
+}
+
+.rune-detail-container pre {
+  background: #1a1b26;
+  color: #c0caf5;
+  padding: 16px;
+  border-radius: 8px;
+  font-family: 'Fira Code', 'Courier New', monospace;
+  max-height: 300px;
+  overflow-y: auto;
+  font-size: 12px;
+  line-height: 1.4;
+  border: 1px solid #414868;
+  margin: 0;
+}
+
+.rune-detail-container pre::-webkit-scrollbar {
+  width: 8px;
+}
+
+.rune-detail-container pre::-webkit-scrollbar-track {
+  background: #1a1b26;
+  border-radius: 4px;
+}
+
+.rune-detail-container pre::-webkit-scrollbar-thumb {
+  background: #414868;
+  border-radius: 4px;
+}
+
+.rune-detail-container pre::-webkit-scrollbar-thumb:hover {
+  background: #565f89;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .rune-detail-container {
+    gap: 16px;
+  }
+  
+  .rune-detail-container section {
+    padding: 12px;
+  }
+  
+  .rune-detail-container h3 {
+    font-size: 1em;
+  }
+  
+  .rune-detail-container pre {
+    font-size: 11px;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .rune-detail-container {
+    gap: 12px;
+  }
+  
+  .rune-detail-container section {
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  .rune-detail-container h3 {
+    font-size: 0.95em;
+    margin-bottom: 8px;
+  }
+  
+  .rune-detail-container pre {
+    font-size: 10px;
+    padding: 10px;
+    max-height: 250px;
+  }
+}
+
+/* 高对比主题与详情分区样式 */
+
+/* 详情容器：在深色弹窗背景下提供清晰分区 */
+.rune-detail-container {
+  padding: 16px;
+  color: #c0caf5; /* 更亮的正文字色，提高对比度 */
+}
+
+.rune-detail-container h3 {
+  color: #e0e7ff; /* 标题更亮，层级更清晰 */
+  margin: 0;
+}
+
+/* 分区头：左右分布，放入折叠按钮 */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: rgba(65, 72, 104, 0.35);
+  border: 1px solid #414868;
+  border-radius: 8px 8px 0 0;
+}
+
+.section-body {
+  padding: 12px 14px;
+  background: rgba(36, 40, 59, 0.55);
+  border: 1px solid #414868;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+}
+
+/* 折叠按钮样式：清晰可点击 */
+.collapse-toggle {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #7aa2f7;
+  color: #e0e7ff;
+  background: linear-gradient(135deg, rgba(122,162,247,0.25), rgba(122,162,247,0.1));
+  cursor: pointer;
+}
+
+.collapse-toggle:hover {
+  background: linear-gradient(135deg, rgba(122,162,247,0.35), rgba(122,162,247,0.2));
+}
+
+/* 媒体网格卡片：更清晰的边框与阴影 */
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+}
+
+.media-item {
+  background: rgba(27, 28, 38, 0.85);
+  border: 1px solid #414868;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+.media-item img,
+.media-item video,
+.media-item audio {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  background: #1a1b26;
+}
+
+/* 文件名/说明文本更明亮 */
+.media-item div, .media-item p {
+  color: #cdd6f4;
+}
+
+/* 提示说明 */
+.rune-detail-container .hint {
+  color: #a9b1d6;
+  font-size: 12px;
+}
+
+/* JSON预览：更友好可读的代码块 */
+.rune-json pre {
+  background: #1a1b26;
+  color: #c0caf5;
+  border: 1px solid #414868;
+  border-radius: 8px;
+  padding: 12px 14px;
+  overflow: auto;
+}
+
+/* 自动分析状态颜色更亮 */
+#analyzeStatus {
+  color: #c0caf5;
+}
+
+/* AI 分析进度与错误样式 */
+.ai-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.ai-progress-bar {
+  height: 6px;
+  width: 0%;
+  background: linear-gradient(90deg, #4dabf7, #38d9a9);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  flex: 1;
+}
+.ai-progress-text {
+  font-size: 12px;
+  color: #555;
+}
+.ai-error {
+  margin-top: 6px;
+  padding: 8px 10px;
+  background: #ffe3e3;
+  color: #c92a2a;
+  border: 1px solid #ffa8a8;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+/* 符文卡片样式 */
+.rune-detail-card {
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,.1);
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.rune-detail-card .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.rune-detail-card .header h2 {
+  margin: 0;
+  font-size: 1.4em;
+}
+
+.rune-detail-card .rune-id {
+  font-family: monospace;
+  background: #f0f0f0;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.9em;
+}
+
+.rune-detail-card .core-info p {
+  margin: 8px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.rune-detail-card .core-info strong {
+  color: #333;
+}
+
+.rune-detail-card .summary {
+  background: #f6f8fa;
+  border-left: 4px solid #4e5ae8;
+  padding: 12px 15px;
+  border-radius: 6px;
+  color: #333;
+  margin: 20px 0;
+  font-size: 14px;
+}
+
+.rune-detail-card details {
+  margin-top: 20px;
+}
+
+.rune-detail-card details summary {
+  cursor: pointer;
+  color: #4e5ae8;
+  font-weight: 600;
+  outline: none;
+}
+
+.rune-detail-card details pre {
+  background: #2d2d2d;
+  color: #f1f1f1;
+  padding: 15px;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.media-preview img, .media-preview video, .media-preview audio {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+/* 确认弹窗样式 */
+#confirmModal .modal-content {
+  max-width: 500px;
+  margin: 10% auto;
+}
+
+#confirmModal .modal-body {
+  padding: 20px;
+}
+
+#confirmModal .form-group {
+  margin-bottom: 15px;
+}
+
+#confirmModal .form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #e0e7ff;
+}
+
+#confirmModal .form-control {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #414868;
+  border-radius: 6px;
+  background: rgba(36, 40, 59, 0.8);
+  color: #c0caf5;
+  font-size: 14px;
+}
+
+#confirmModal .form-control:focus {
+  outline: none;
+  border-color: #7aa2f7;
+  box-shadow: 0 0 0 2px rgba(122, 162, 247, 0.2);
+}
+
+#confirmModal select.form-control {
+  cursor: pointer;
+}
+
+#confirmModal textarea.form-control {
+  resize: vertical;
+  min-height: 80px;
+}
+
+#confirmModal .modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #414868;
+}
+
+#confirmModal .btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#confirmModal .btn-primary {
+  background: linear-gradient(135deg, #4e5ae8, #7aa2f7);
+  color: white;
+}
+
+#confirmModal .btn-primary:hover {
+  background: linear-gradient(135deg, #7aa2f7, #bb9af7);
+  transform: translateY(-1px);
+}
+
+#confirmModal .btn-secondary {
+  background: rgba(65, 72, 104, 0.5);
+  color: #c0caf5;
+  border: 1px solid #414868;
+}
+
+#confirmModal .btn-secondary:hover {
+  background: rgba(65, 72, 104, 0.8);
+  transform: translateY(-1px);
+}
+
+/* 工作区样式 */
+#workspaceBox {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+#workspaceBox h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 18px;
+}
+
+#workspaceBox button {
+  margin-right: 10px;
+  margin-bottom: 10px;
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #f8f9fa;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+#workspaceBox button:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+#workspaceStatus {
+  margin: 10px 0;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: #f8f9fa;
+  border-left: 3px solid #007bff;
+  font-size: 14px;
+}
+
+.workspace-list {
+  margin-top: 15px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.workspace-item {
+  padding: 12px;
+  margin-bottom: 8px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 3px solid #28a745;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.workspace-item:hover {
+  background: #e9ecef;
+  transform: translateX(2px);
+}
+
+.workspace-item h4 {
+  margin: 0 0 5px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.workspace-item .meta {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.workspace-item .media-info {
+  font-size: 11px;
+  color: #888;
+}
+
+.workspace-item .actions {
+  margin-top: 8px;
+}
+
+.workspace-item .actions button {
+  margin-right: 5px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.workspace-empty {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 20px;
+}
+
+/* 末尾为紧凑符文库列表样式补充 */
+.rune-library-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rune-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #0f1115;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 8px 12px;
+  min-height: 44px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.rune-list-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+
+.rune-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #6a5acd 0%, #7dcfff 100%);
+  box-shadow: 0 2px 6px rgba(125, 207, 255, 0.35);
+}
+
+.rune-name {
+  margin-left: 10px;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.rune-time {
+  margin-left: 12px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.rune-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rune-btn {
+  background: #111827;
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.rune-btn:hover {
+  background: #1f2937;
+  color: #e2e8f0;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 600px) {
+  .rune-time {
+    display: none;
+  }
+}
+
+/* AI聊天室建议按钮与消息样式 */
+.chat-suggestions {
+  margin: 15px 0;
+  padding: 15px;
+  background: rgba(125, 207, 255, 0.1);
+  border-radius: 12px;
+  border: 1px solid rgba(125, 207, 255, 0.3);
+}
+
+.chat-suggestions p {
+  margin: 0 0 10px 0;
+  color: #7dcfff;
+  font-size: 14px;
+}
+
+.suggestion-btn {
+  background: rgba(125, 207, 255, 0.2);
+  border: 1px solid rgba(125, 207, 255, 0.4);
+  color: #7dcfff;
+  padding: 8px 12px;
+  margin: 5px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.suggestion-btn:hover {
+  background: rgba(125, 207, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.chat-message {
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin: 6px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.chat-message.ai-message { 
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff); 
+  color: #1e293b; 
+  border-left: 3px solid #4e5ae8;
+}
+.chat-message.user-message { 
+  background: linear-gradient(135deg, #f8f9fa, #e2e8f0); 
+  color: #0f172a; 
+  align-self: flex-end;
+  border-right: 3px solid #64748b;
+}
+
