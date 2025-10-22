@@ -1,132 +1,144 @@
-// Rune Engine 主模块 - 集成自动符文生成功能
+import { logger } from '../utils/logger.js';
 
-// 全局变量声明
+// Rune Engine core module - integrates automatic rune generation features.
+
+// Global state holders that can be shared across modules.
 let runeManager = null;
 let workspaceManager = null;
-let autoRuneGenerator = null; // 自动符文生成器
+let autoRuneGenerator = null;
 
-// 导出函数供其他模块使用
+// Export handles so other modules can reuse shared state when needed.
 export { runeManager, workspaceManager, autoRuneGenerator };
 
-// 初始化工作区管理器
+const LOG_TAG = 'Main';
+
+/**
+ * Initialize workspace helpers and expose persistent rune utilities.
+ */
 function initWorkspaceManager() {
-  // 初始化符文管理器
+  // Initialize rune manager.
   if (typeof RuneManager !== 'undefined') {
     runeManager = new RuneManager();
-    console.log('✅ 符文管理器初始化完成');
+    logger.info(LOG_TAG, 'Rune manager ready');
   } else {
-    console.error('❌ RuneManager类未定义');
+    logger.error(LOG_TAG, 'RuneManager class is not defined');
   }
-  
-  // 工作区管理器初始化 - 绑定到指定工作区目录
+
+  // Prepare workspace manager bindings.
   workspaceManager = {
-    // 设置当前工作区路径为指定的myrune目录
+    // Set the default workspace path that desktop builds expect.
     currentPath: 'D:\\YinGAN-RuneEngine\\myrune',
-    
-    // 增强的saveRune函数，实现真正的文件保存逻辑
+
+    /**
+     * Persist rune data and related media files into the workspace folder.
+     * @param {object} rune - Rune payload produced by the generator.
+     * @param {FileList|File[]} files - Optional media assets to store together.
+     * @returns {Promise<{success: boolean, runeId?: string, filePath?: string, error?: string}>}
+     */
     saveRune: async function(rune, files) {
-      console.log('💾 保存符文到工作区:', rune.name);
-      
+      logger.info(LOG_TAG, `Saving rune to workspace: ${rune.name}`);
+
       try {
-        // 检查并创建工作区目录结构
+        // Ensure the workspace folder hierarchy exists.
         await this.ensureWorkspaceDirectory();
-        
-        // 生成唯一的符文ID（使用时间戳+随机数）
+
+        // Generate a unique rune identifier.
         const runeId = Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        
-        // 保存符文JSON文件到rune子目录
+
+        // Save the rune JSON file into the rune subfolder.
         const runeFileName = `rune_${runeId}.json`;
         const runeFilePath = `${this.currentPath}\\rune\\${runeFileName}`;
-        
-        // 准备符文数据（包含多模态内容）
+
+        // Prepare rune data package (including multimodal content).
         const runeData = {
           id: runeId,
           name: rune.name,
           timestamp: new Date().toISOString(),
           nineGrid: rune.nineGrid,
-          // 保存多模态内容信息
           multimodalContent: rune.nineGrid.content || {},
-          // 保存统一向量信息
           unifiedVector: rune.unifiedVector || null,
-          // 保存降级标志
           _fallback: rune._fallback || false,
-          // 元数据
           metadata: {
             fileCount: files ? files.length : 0,
             originalFiles: files ? files.map(f => f.name) : [],
             version: '1.0'
           }
         };
-        
-        // 使用Node.js的fs模块保存JSON文件
+
+        // Use Node.js fs module when available (Electron or desktop builds).
         if (typeof window.require !== 'undefined') {
           const fs = window.require('fs').promises;
           await fs.writeFile(runeFilePath, JSON.stringify(runeData, null, 2), 'utf8');
-          console.log('✅ 符文JSON文件保存成功:', runeFilePath);
+          logger.info(LOG_TAG, `Rune JSON saved at ${runeFilePath}`);
         } else {
-          // 浏览器环境下使用下载方式
+          // Fallback for browsers: trigger file download.
           this.downloadFile(runeData, runeFileName);
         }
-        
-        // 如果有媒体文件，保存到media子目录
+
+        // Save additional media assets into the media subfolder.
         if (files && files.length > 0) {
           await this.saveMediaFiles(files, runeId);
         }
-        
-        // 更新工作区状态显示
+
+        // Refresh workspace status in the UI.
         this.updateWorkspaceStatus();
-        
-        console.log('✅ 符文保存完成！ID:', runeId);
+
+        logger.info(LOG_TAG, `Rune stored successfully. ID: ${runeId}`);
         return { success: true, runeId: runeId, filePath: runeFilePath };
-        
+
       } catch (error) {
-        console.error('❌ 符文保存失败:', error);
+        logger.error(LOG_TAG, error);
         this.showError('符文保存失败: ' + error.message);
         return { success: false, error: error.message };
       }
     },
-    
-    // 检查并创建工作区目录结构
+
+    /**
+     * Ensure the workspace folder hierarchy exists when running in Node contexts.
+     */
     ensureWorkspaceDirectory: async function() {
       try {
         if (typeof window.require !== 'undefined') {
           const fs = window.require('fs').promises;
           const path = window.require('path');
-          
-          // 检查主工作区目录是否存在
+
+          // Create the primary workspace directory if needed.
           try {
             await fs.access(this.currentPath);
           } catch {
-            // 目录不存在，创建它
             await fs.mkdir(this.currentPath, { recursive: true });
-            console.log('📁 创建工作区目录:', this.currentPath);
+            logger.info(LOG_TAG, `Workspace directory created: ${this.currentPath}`);
           }
-          
-          // 创建rune子目录
+
+          // Create rune subdirectory.
           const runeDir = path.join(this.currentPath, 'rune');
           try {
             await fs.access(runeDir);
           } catch {
             await fs.mkdir(runeDir, { recursive: true });
-            console.log('📁 创建符文目录:', runeDir);
+            logger.info(LOG_TAG, `Rune directory created: ${runeDir}`);
           }
-          
-          // 创建media子目录
+
+          // Create media subdirectory.
           const mediaDir = path.join(this.currentPath, 'media');
           try {
             await fs.access(mediaDir);
           } catch {
             await fs.mkdir(mediaDir, { recursive: true });
-            console.log('📁 创建媒体目录:', mediaDir);
+            logger.info(LOG_TAG, `Media directory created: ${mediaDir}`);
           }
         }
       } catch (error) {
-        console.error('❌ 创建工作区目录失败:', error);
+        logger.error(LOG_TAG, error);
         throw error;
       }
     },
-    
-    // 保存媒体文件
+
+    /**
+     * Store media files on disk when the desktop APIs are available.
+     * @param {FileList|File[]} files - Media assets selected by the user.
+     * @param {string} runeId - Identifier used to build file names.
+     */
     saveMediaFiles: async function(files, runeId) {
       try {
         if (typeof window.require !== 'undefined') {
@@ -138,20 +150,23 @@ function initWorkspaceManager() {
             const fileExt = path.extname(file.name);
             const mediaFileName = `media_${runeId}_${i}${fileExt}`;
             const mediaFilePath = path.join(this.currentPath, 'media', mediaFileName);
-            
-            // 读取文件内容并保存
+
+            // Persist binary content to disk.
             const fileBuffer = await file.arrayBuffer();
             await fs.writeFile(mediaFilePath, Buffer.from(fileBuffer));
-            console.log(`📄 媒体文件保存成功: ${mediaFilePath} (${file.name})`);
+            logger.info(LOG_TAG, `Media file saved: ${mediaFilePath} (${file.name})`);
           }
         }
       } catch (error) {
-        console.error('❌ 保存媒体文件失败:', error);
-        // 不中断主流程，只记录错误
+        logger.error(LOG_TAG, error);
       }
     },
-    
-    // 浏览器环境下载文件
+
+    /**
+     * Provide a download fallback when running in pure browser environments.
+     * @param {object} data - Rune payload to serialize.
+     * @param {string} fileName - Suggested download file name.
+     */
     downloadFile: function(data, fileName) {
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -162,10 +177,12 @@ function initWorkspaceManager() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      console.log('📥 符文文件已下载:', fileName);
+      logger.info(LOG_TAG, `Rune downloaded: ${fileName}`);
     },
-    
-    // 更新工作区状态显示（适配精简版布局）
+
+    /**
+     * Refresh workspace status block to reflect the active directory.
+     */
     updateWorkspaceStatus: function() {
       const statusElement = document.getElementById('workspaceStatus');
       if (statusElement) {
@@ -177,8 +194,11 @@ function initWorkspaceManager() {
         `;
       }
     },
-    
-    // 显示错误信息
+
+    /**
+     * Display workspace errors inside the UI and clear them after a timeout.
+     * @param {string} message - Human readable error description.
+     */
     showError: function(message) {
       const errorElement = document.getElementById('workspaceError');
       if (errorElement) {
@@ -187,132 +207,136 @@ function initWorkspaceManager() {
             <strong>❌ 错误:</strong> ${message}
           </div>
         `;
-        // 3秒后清除错误信息
+        // Clear the error message after a short delay.
         setTimeout(() => {
           errorElement.innerHTML = '';
         }, 3000);
       }
     }
   };
-  
-  console.log('✅ 工作区管理器初始化完成');
+
+  logger.info(LOG_TAG, 'Workspace helpers initialized');
 }
 
-// 初始化自动符文生成器（异步加载）
+/**
+ * Dynamically load the auto rune generator module and expose it for later calls.
+ */
 async function initAutoRuneGenerator() {
   try {
-    // 动态导入自动符文生成模块
+    // Attempt dynamic import of the auto rune generator module.
     try {
       const module = await import('./auto-rune-generator.js');
       autoRuneGenerator = module.autoRuneGenerator;
-      console.log('✅ 自动符文生成器加载完成');
+      logger.info(LOG_TAG, 'Auto rune generator loaded');
     } catch (importError) {
-      console.warn('⚠️ 动态导入失败，尝试备用加载方式:', importError);
-      // 备用方案：如果动态导入失败，在全局作用域查找
+      logger.error(LOG_TAG, importError);
+      // Fallback: attempt to locate a global implementation exposed elsewhere.
       if (typeof window.autoRuneGenerator === 'function') {
         autoRuneGenerator = window.autoRuneGenerator;
-        console.log('✅ 使用全局autoRuneGenerator函数');
+        logger.info(LOG_TAG, 'Using global autoRuneGenerator fallback');
       } else {
-        console.error('❌ 无法加载自动符文生成器');
+        logger.error(LOG_TAG, 'Auto rune generator missing');
       }
     }
   } catch (error) {
-    console.error('❌ 自动符文生成器加载失败:', error);
+    logger.error(LOG_TAG, error);
   }
 }
 
-// 自动符文生成处理函数（适配精简版布局）
+/**
+ * Handle the auto rune generation workflow triggered by the UI button.
+ */
 async function handleAutoRuneGeneration() {
-  console.log('🤖 开始自动符文生成流程...');
+  logger.info(LOG_TAG, 'Starting auto rune generation flow');
   
-  // 检查自动符文生成器是否可用
+  // Ensure the auto rune generator module is ready.
   if (!autoRuneGenerator) {
     alert('❌ 自动符文生成器尚未加载完成，请稍后再试');
     return;
   }
-  
-  // 检查符文管理器是否可用
+
+  // Ensure the rune manager exists before generating data.
   if (!runeManager) {
     alert('❌ 符文管理器未初始化，无法生成符文');
     return;
   }
-  
-  // 获取文件输入元素（精简版布局）
+
+  // Locate the input controls used by the simplified layout.
   const fileInput = document.getElementById('fileInput');
   const runeNameInput = document.getElementById('runeName');
   const runeDescInput = document.getElementById('runeDesc');
-  
-  // 获取用户选择的文件
+
+  // Resolve the first selected file from the input element.
   let selectedFile = null;
   if (fileInput && fileInput.files && fileInput.files.length > 0) {
     selectedFile = fileInput.files[0];
-    console.log('📁 使用文件:', selectedFile.name);
+    logger.info(LOG_TAG, `Selected file: ${selectedFile.name}`);
   }
-  
-  // 检查是否有文件被选择
+
+  // Abort early if no file was selected.
   if (!selectedFile) {
     alert('❌ 请先选择一个文件（图片、音频、视频或文本文件）');
     return;
   }
-  
-  // 获取符文名称和描述（精简版布局新增）
+
+  // Collect optional rune metadata from the form.
   const runeName = runeNameInput ? runeNameInput.value.trim() : '';
   const runeDesc = runeDescInput ? runeDescInput.value.trim() : '';
-  
-  // 显示进度信息
+
+  // Update the progress indicator while processing.
   const progressText = document.getElementById('progressText');
   if (progressText) {
     progressText.textContent = '🤖 AI正在理解文件内容...';
   }
-  
+
   try {
-    console.log('🎯 调用自动符文生成器...');
-    console.log('📊 文件名:', selectedFile.name);
-    console.log('📊 文件类型:', selectedFile.type);
-    console.log('📊 文件大小:', (selectedFile.size / 1024).toFixed(2), 'KB');
+    logger.info(LOG_TAG, 'Invoking auto rune generator');
+    logger.info(LOG_TAG, `File name: ${selectedFile.name}`);
+    logger.info(LOG_TAG, `File type: ${selectedFile.type}`);
+    logger.info(LOG_TAG, `File size: ${(selectedFile.size / 1024).toFixed(2)} KB`);
     if (runeName) {
-      console.log('🏷️ 符文名称:', runeName);
+      logger.info(LOG_TAG, `Rune name preset: ${runeName}`);
     }
     if (runeDesc) {
-      console.log('📝 符文描述:', runeDesc);
+      logger.info(LOG_TAG, `Rune description preset: ${runeDesc}`);
     }
     
-    // 调用自动符文生成器（传入名称和描述）
+    // Run the generator with the optional name and description.
     const generatedRune = await autoRuneGenerator(
-      selectedFile, 
-      runeDesc, // 使用描述作为额外文本
+      selectedFile,
+      runeDesc, // Use the description field as additional context.
       runeManager,
       workspaceManager
     );
-    
-    // 如果有指定名称，更新生成的符文名称
+
+    // Update the rune name if the user provided one.
     if (runeName && generatedRune) {
       generatedRune.name = runeName;
     }
+
+    logger.info(LOG_TAG, 'Auto rune generation completed');
+    logger.info(LOG_TAG, `Rune name: ${generatedRune.name}`);
+    logger.info(LOG_TAG, `Rune intent: ${generatedRune.nineGrid.core.intent}`);
+    logger.info(LOG_TAG, `Rune essence: ${generatedRune.nineGrid.core.essence}`);
+    logger.info(LOG_TAG, `Rune emotion: ${generatedRune.nineGrid.metadata.emotion}`);
+    logger.info(LOG_TAG, `Rune keywords: ${generatedRune.nineGrid.metadata.keywords.join(', ')}`);
     
-    console.log('✅ 自动符文生成成功!');
-    console.log('🏷️ 符文名称:', generatedRune.name);
-    console.log('🎯 符文意图:', generatedRune.nineGrid.core.intent);
-    console.log('💎 符文本质:', generatedRune.nineGrid.core.essence);
-    console.log('😊 符文情感:', generatedRune.nineGrid.metadata.emotion);
-    console.log('🔑 关键词:', generatedRune.nineGrid.metadata.keywords.join(', '));
-    
-    // 更新进度信息
+    // Reflect completion inside the progress indicator.
     if (progressText) {
       progressText.textContent = `✅ 符文「${generatedRune.name}」生成完成！`;
     }
-    
-    // 显示生成的符文详情
+
+    // Render the generated rune inside the UI when helpers are available.
     if (typeof displayRune === 'function') {
       displayRune(generatedRune);
     }
-    
-    // 更新符文库列表
+
+    // Refresh the rune library list to include the new entry.
     if (typeof updateRuneLibraryList === 'function') {
       updateRuneLibraryList();
     }
-    
-    // 显示成功提示
+
+    // Provide a success alert summarizing the generated rune.
     setTimeout(() => {
       alert(`🎉 符文「${generatedRune.name}」自动生成完成！\n\n` +
             `🎯 意图：${generatedRune.nineGrid.core.intent}\n` +
@@ -321,7 +345,7 @@ async function handleAutoRuneGeneration() {
     }, 100);
     
   } catch (error) {
-    console.error('❌ 自动符文生成失败:', error);
+    logger.error(LOG_TAG, error);
     
     // 更新进度信息
     if (progressText) {
