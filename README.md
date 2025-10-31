@@ -48,3 +48,44 @@
 - 不要在前端代码中包含 `sk-...` 密钥。
 - 推荐通过 `.env` 或 IDE 集成面板进行配置。
 - 调用较多时，建议在代理层加入节流与重试。
+
+## Project Structure 项目结构
+
+```
+YinGAN-RuneEngine/
+├── index.html
+├── js/
+│   ├── ai-understanding.js
+│   ├── auto-rune-generator.js
+│   ├── main.js
+│   └── rune-structure.js
+├── utils/
+│   └── logger.js
+├── style.css
+├── api/
+│   └── ...
+├── scripts/
+│   └── ...
+└── README.md
+```
+
+## Flow Overview 运行逻辑流程
+
+1. **index.html** – Loads UI assets and registers global scripts before `DOMContentLoaded`（在 `DOMContentLoaded` 前加载核心脚本，确保 `window.AI` 可用）。
+2. **window.AI** – `js/ai-understanding.js` exposes AI helpers that handle semantic analysis, embeddings, and media understanding（`js/ai-understanding.js` 提供语义理解、向量与多模态解析）。
+3. **Auto rune generation** – `js/main.js` 调用 `js/auto-rune-generator.js`，根据用户上传文件和描述生成九转符文结构（`js/main.js` triggers `autoRuneGenerator`）。
+4. **Workspace save** – The workspace manager persists runes and media into the configured workspace folder or triggers a download fallback（工作区管理器保存符文及媒体，或在浏览器中触发下载）。
+
+## Environment Variables 环境变量
+
+| Name | Description (English) | 说明（中文） |
+| --- | --- | --- |
+| `API_BASE` | Base URL for the proxy that forwards AI requests. | AI 代理服务的基础地址，用于转发模型调用。 |
+| `MODEL_NAME` | Preferred model identifier for rune understanding. | 符文理解所使用的模型名称。 |
+
+## Usage Tips 使用提示
+
+- Run `npm run proxy` to start the local proxy that forwards AI requests（执行 `npm run proxy` 启动本地代理）。
+- Run `npm run start` to serve the front-end or reuse an existing static server（执行 `npm run start` 或使用已有的静态服务器启动前端）。
+- Visit `http://localhost:8000/` after both processes are running to interact with the Rune Engine UI（在两个服务启动后访问 `http://localhost:8000/` 体验 Rune Engine 界面）。
+

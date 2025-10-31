@@ -1,13 +1,15 @@
-// YinGAN OS - 多模态符文生成器（稳定版 v3.0）
-// 作者：GPT哥 + 小葱
-// 功能：支持图片、音频、视频、文本自动分析与统一语义向量合成
-// 增强：视频首帧提取、AI理解统一接口、智能fallback判定
+import { logger } from '../utils/logger.js';
+
+// YinGAN OS - Multimodal rune generator (stable v3.0)
+// Features: image/audio/video/text analysis and unified semantic vector synthesis.
 
 let generateEmbedding = null;
 let analyzeImage = null;
 let transcribeAudio = null;
 let runeManager = null;
 let workspaceManager = null;
+
+const LOG_TAG = 'AutoRune';
 
 // 辅助函数：文件转Base64
 async function fileToBase64(file) {
@@ -94,7 +96,13 @@ function extractKeywords(text, maxKeywords = 8) {
     .slice(0,maxKeywords).map(([w])=>w);
 }
 
-// 主函数：全自动符文生成（多模态 + 容错）
+/**
+ * Automatically build a rune from the provided file input and optional text.
+ * @param {File} inputFile - Uploaded media file selected by the user.
+ * @param {string} extraText - Additional prompt text used for context.
+ * @param {RuneManager|null} _runeManager - Optional pre-initialized manager instance.
+ * @param {object|null} _workspaceManager - Optional workspace helper overrides.
+ */
 export async function autoRuneGenerator(inputFile, extraText = "", _runeManager = null, _workspaceManager = null) {
   runeManager = _runeManager || runeManager;
   workspaceManager = _workspaceManager || workspaceManager;
@@ -111,7 +119,7 @@ export async function autoRuneGenerator(inputFile, extraText = "", _runeManager 
         generateEmbedding = window.AI.generateEmbedding;
         analyzeImage = window.AI.analyzeImage;
         transcribeAudio = window.AI.transcribeAudio;
-        console.log('✅ 已从 window.AI 取得 AI 接口');
+        logger.info(LOG_TAG, 'AI helpers resolved from window.AI');
       }
       // 2) 若仍不可用，尝试动态导入（仅在支持 import() 的环境可能成功）
        if (!generateEmbedding || typeof generateEmbedding !== 'function') {
@@ -120,25 +128,25 @@ export async function autoRuneGenerator(inputFile, extraText = "", _runeManager 
          generateEmbedding = aiModule.generateEmbedding || (typeof window !== 'undefined' ? window.AI?.generateEmbedding : null);
          analyzeImage = aiModule.analyzeImage || (typeof window !== 'undefined' ? window.AI?.analyzeImage : null);
          transcribeAudio = aiModule.transcribeAudio || (typeof window !== 'undefined' ? window.AI?.transcribeAudio : null);
-         console.log('ℹ️ 已尝试动态导入 AI 模块');
+         logger.info(LOG_TAG, 'Attempted dynamic import of AI module');
        }
     } catch (err) {
-      console.warn('⚠️ AI模块加载失败：', err);
+      logger.error(LOG_TAG, err);
     }
     // 3) 最终兜底：若仍无可用函数，提供降级空实现，避免 TypeError
     if (typeof generateEmbedding !== 'function') {
-      console.warn('⚠️ generateEmbedding 未就绪，使用降级空实现');
+      logger.info(LOG_TAG, 'generateEmbedding unavailable, using fallback');
       generateEmbedding = async (text) => {
         // 降级注释：当无法调用真实嵌入服务时，返回空数组以避免崩溃
         return [];
       };
     }
     if (typeof analyzeImage !== 'function') {
-      console.warn('⚠️ analyzeImage 未就绪，使用降级空实现');
+      logger.info(LOG_TAG, 'analyzeImage unavailable, using fallback');
       analyzeImage = async () => '';
     }
     if (typeof transcribeAudio !== 'function') {
-      console.warn('⚠️ transcribeAudio 未就绪，使用降级空实现');
+      logger.info(LOG_TAG, 'transcribeAudio unavailable, using fallback');
       transcribeAudio = async () => '';
     }
   }
@@ -151,7 +159,7 @@ export async function autoRuneGenerator(inputFile, extraText = "", _runeManager 
   let fallbackFlag = false;
   let mediaBase64 = null;
 
-  console.log(`🎯 开始处理文件: ${inputFile.name} (${mimeType})`);
+  logger.info(LOG_TAG, `Processing file: ${inputFile.name} (${mimeType})`);
 
   // Step 1. 模态识别与预处理
   if (mimeType.startsWith("image")) {
@@ -159,9 +167,9 @@ export async function autoRuneGenerator(inputFile, extraText = "", _runeManager 
     rune.nineGrid.content.imageData = mediaBase64;
     try {
       rune.nineGrid.content.imageDesc = await analyzeImage({ dataUrl: mediaBase64 });
-      console.log("🖼️ 图像理解完成:", rune.nineGrid.content.imageDesc);
+      logger.info(LOG_TAG, `Image analysis ready: ${rune.nineGrid.content.imageDesc}`);
     } catch (e) {
-      console.warn("⚠️ 图像理解失败:", e);
+      logger.error(LOG_TAG, e);
       fallbackFlag = true;
     }
   } else if (mimeType.startsWith("audio")) {
@@ -169,9 +177,9 @@ export async function autoRuneGenerator(inputFile, extraText = "", _runeManager 
     rune.nineGrid.content.audioData = mediaBase64;
     try {
       rune.nineGrid.content.audioText = await transcribeAudio(inputFile);
-      console.log("🎵 音频转写完成:", rune.nineGrid.content.audioText.slice(0,80));
+      logger.info(LOG_TAG, `Audio transcription ready: ${rune.nineGrid.content.audioText.slice(0, 80)}`);
     } catch (e) {
-      console.warn("⚠️ 音频转写失败:", e);
+      logger.error(LOG_TAG, e);
       fallbackFlag = true;
     }
   } else if (mimeType.startsWith("video")) {
@@ -181,9 +189,9 @@ export async function autoRuneGenerator(inputFile, extraText = "", _runeManager 
       rune.nineGrid.content.videoFrame = frameData;
       const prompt = "请描述此视频首帧代表的场景与情绪（≤50字）";
       rune.nineGrid.content.videoSummary = await analyzeImage({ dataUrl: frameData, prompt });
-      console.log("🎬 视频摘要完成:", rune.nineGrid.content.videoSummary);
+      logger.info(LOG_TAG, `Video summary ready: ${rune.nineGrid.content.videoSummary}`);
     } catch (e) {
-      console.warn("⚠️ 视频首帧或摘要失败:", e);
+      logger.error(LOG_TAG, e);
       fallbackFlag = true;
     }
   } else if (mimeType.startsWith("text")) {
@@ -196,7 +204,7 @@ export async function autoRuneGenerator(inputFile, extraText = "", _runeManager 
   let aiStruct = null;
   try {
     if (typeof window !== "undefined" && window.AI?.aiUnderstandRune) {
-      console.log("🤖 使用 window.AI.aiUnderstandRune 进行符文理解（九转结构）...");
+      logger.info(LOG_TAG, 'Running window.AI.aiUnderstandRune (nine-turn structure)');
       const candidate = {
         name: rune.name,
         nineGrid: {
@@ -211,12 +219,12 @@ export async function autoRuneGenerator(inputFile, extraText = "", _runeManager 
         }
       };
       aiStruct = await window.AI.aiUnderstandRune(candidate);
-      console.log("✅ AI九转结构生成完成:", aiStruct?.rune_name || rune.name);
+      logger.info(LOG_TAG, `AI nine-turn structure ready: ${aiStruct?.rune_name || rune.name}`);
     } else {
       throw new Error("AI接口未初始化");
     }
   } catch (e) {
-    console.warn("⚠️ AI理解失败，使用降级结构:", e);
+    logger.error(LOG_TAG, e);
     aiStruct = {
       rune_name: rune.name,
       category: '未分类',
@@ -270,7 +278,7 @@ export async function autoRuneGenerator(inputFile, extraText = "", _runeManager 
       rune.nineGrid.status = aiStruct.status;
     }
   } catch (mapErr) {
-    console.warn('⚠️ 映射AI结构到Rune失败:', mapErr);
+    logger.error(LOG_TAG, mapErr);
   }
 
   // Step 3. 生成多模态Embedding
@@ -288,7 +296,7 @@ export async function autoRuneGenerator(inputFile, extraText = "", _runeManager 
       const vec = await generateEmbedding(src);
       if (vec?.length) modalityVectors.push(vec);
     } catch (e) {
-      console.warn("embedding失败:", e);
+      logger.error(LOG_TAG, e);
     }
   }
 
@@ -300,7 +308,7 @@ export async function autoRuneGenerator(inputFile, extraText = "", _runeManager 
       for (let i=0;i<dim;i++) unifiedVector[i]+=vec[i];
     });
     for (let i=0;i<dim;i++) unifiedVector[i]/=modalityVectors.length;
-    console.log("✅ 向量合成完成，维度:", unifiedVector.length);
+    logger.info(LOG_TAG, `Combined vector dimension: ${unifiedVector.length}`);
   } else {
     unifiedVector = new Array(768).fill(0.1);
     fallbackFlag = true;
@@ -325,7 +333,7 @@ export async function autoRuneGenerator(inputFile, extraText = "", _runeManager 
     rune.nineGrid.metadata._fallback = false;
   }
 
-  console.log(`✅ 符文完成: ${rune.name}  (fallback=${rune.nineGrid.metadata._fallback})`);
+  logger.info(LOG_TAG, `Rune completed: ${rune.name} (fallback=${rune.nineGrid.metadata._fallback})`);
 
   if (workspaceManager?.saveRune) {
     await workspaceManager.saveRune(rune, [inputFile]);

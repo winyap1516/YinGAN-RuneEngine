@@ -8,7 +8,9 @@
   <!-- Transformers.js for browser-side embeddings -->
   <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.8.0/dist/transformers.min.js"></script>
   <!-- 符文数据结构 -->
-  <script src="rune-structure.js"></script>
+  <script defer src="js/rune-structure.js"></script>
+  <!-- AI 能力封装 -->
+  <script defer src="js/ai-understanding.js"></script>
   
 </head>
 <body>
@@ -112,9 +114,8 @@
   </div>
 
   <!-- 自动符文生成器 -->
-  <script type="module" src="auto-rune-generator.js"></script>
-  <script type="module" src="ai-understanding.js"></script>
-  <script type="module" src="main.js"></script>
+  <script type="module" src="js/auto-rune-generator.js"></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
 

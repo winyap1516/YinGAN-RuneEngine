@@ -41,9 +41,10 @@
   }
 
   /**
-   * AI 语义理解：输入符文数据，输出 { intent, essence, purpose, emotion, summary }
-   * - 使用 Gemini 代理 /generate
-   * - 若解析失败或服务不可用，则回退到简单规则法
+   * Interpret rune content by calling the proxy service and returning a nine-turn schema.
+   * Falls back to lightweight heuristics when the remote model fails.
+   * @param {object} runeData - Partial rune payload containing text and media summaries.
+   * @returns {Promise<object>} Semantic structure describing the rune.
    */
     async function aiUnderstandRune(runeData) {
     // 中文说明：按新版九转语义系统返回完整结构，严格JSON；失败时构造降级结构。
@@ -179,7 +180,7 @@
     }
   }
 
-  // 新增：关键词提取与语言检测（用于降级与补齐）
+  // Keyword extraction and language detection helpers used during fallback logic.
   function extractKeywords(text, maxKeywords = 8) {
     const words = String(text || '').toLowerCase()
       .replace(/[^\u4e00-\u9fff\w\s]/g, ' ')
@@ -201,9 +202,9 @@
 
 
   /**
-   * 文本向量化（Embeddings）
-   * - 通过 /api/gemini/embeddings 代理调用 Gemini embedContent
-   * - 返回 embedding 数组；失败时返回空数组
+   * Request a text embedding from the proxy endpoint, returning vector data.
+   * @param {string} text - Raw text used to build the embedding.
+   * @returns {Promise<number[]>} Embedding vector (or empty array on failure).
    */
   async function generateEmbedding(text) {
     try {
@@ -226,9 +227,10 @@
   }
 
   /**
-   * 音频转写（Gemini，通过代理调用真实API）
-   * - 通过 /api/gemini/audio/transcriptions 上传 multipart/form-data
-   * - 返回转写文本，失败则返回空字符串
+   * Perform client-side audio transcription via the proxy service.
+   * @param {File|Blob} file - Audio source to transcribe.
+   * @param {object} [options] - Additional configuration for the request.
+   * @returns {Promise<string>} Transcript text or an empty string on failure.
    */
   async function transcribeAudio(file, options = {}) {
     try {
@@ -253,8 +255,12 @@
   }
 
   /**
-   * 图片理解（Gemini / Vision，通过代理调用）
-   * - 输入 imageUrl 或 base64 dataUrl，返回模型文本描述
+   * Send image content to the proxy for captioning or vision understanding.
+   * @param {object} options - Contains either an image URL or a base64 data URL.
+   * @param {string} [options.imageUrl] - Remote image source.
+   * @param {string} [options.dataUrl] - Inline base64 representation.
+   * @param {string} [options.prompt] - Optional instruction forwarded to the model.
+   * @returns {Promise<string>} Natural language summary produced by the AI service.
    */
   async function analyzeImage({ imageUrl, dataUrl, prompt = '请用中文描述图像主要内容（≤50字）。' }) {
     try {
